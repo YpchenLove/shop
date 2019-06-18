@@ -1,0 +1,54 @@
+{
+  "name": "Koa2-shop",
+  "version": "1.0.0",
+  "author": "Ypchen",
+  "description": "Koa2 + MySQL搭建零食商贩 RESTful API接口",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "lint": "eslint --ext .js",
+    "lint-fix": "eslint --fix --ext .js"
+  },
+  "_moduleAliases": {
+    "@": ".",
+    "@core": "core",
+    "@models": "app/models",
+    "@validators": "app/validators/validator"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YpchenLove/Koa2-island.git"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "basic-auth": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "chalk": "^2.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-json": "^2.0.2",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "lodash": "^4.17.11",
+    "module-alias": "^2.2.0",
+    "mysql2": "^1.6.5",
+    "nodemon": "^1.18.9",
+    "require-directory": "^2.1.1",
+    "sequelize": "^5.8.6",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YpchenLove/Koa2-island/issues"
+  },
+  "homepage": "https://github.com/YpchenLove/Koa2-island#readme"
+}
