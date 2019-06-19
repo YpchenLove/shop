@@ -12,10 +12,22 @@ class Banner extends Model {
         if (!banner) {
             throw new global.errs.NotFound()
         }
-        const items = await BannerItem.findAll({
-            where: { banner_id: id }
+        const items = await banner.getItems()
+        items.forEach((item) => {
+            console.log(item)
         })
         banner.setDataValue('items', items)
+        return banner
+    }
+
+    // 获取banner详情
+    static async getBannerDetail(id) {
+        const banner = await BannerItem.findOne({
+            where: { id }
+        })
+        if (!banner) {
+            throw new global.errs.NotFound()
+        }
         return banner
     }
 }
@@ -33,4 +45,9 @@ Banner.init({
     tableName: 'banner'
 })
 
+//  关联 bannerItem模型
+Banner.hasMany(BannerItem, {
+    foreignKey: 'bannerId',
+    as: 'items'
+})
 module.exports = { Banner }

@@ -1,9 +1,9 @@
 const util = require('util')
 const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
+const { Image } = require('./image')
 
-class BannerItem extends Model {
-}
+class BannerItem extends Model {}
 
 BannerItem.init({
     id: {
@@ -18,6 +18,12 @@ BannerItem.init({
 }, {
     sequelize: db,
     tableName: 'banner_item'
+})
+
+//  关联 Image 模型
+BannerItem.belongsTo(Image, {
+    foreignKey: 'imgId',
+    as: 'img'
 })
 
 module.exports = { BannerItem }
