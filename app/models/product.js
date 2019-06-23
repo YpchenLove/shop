@@ -1,12 +1,7 @@
-const util = require('util')
 const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 
-class Product extends Model {
-    // 获取banner列表
-    static async getBanner(id) {
-    }
-}
+class Product extends Model {}
 
 Product.init({
     id: {

@@ -16,7 +16,7 @@ class Banner extends Model {
         const items = await banner.getItems()
         for (let item of items) {
             const url = await Banner.getImgUrl(item)
-            item.setDataValue('url', url)
+            item.setDataValue('img', url)
         }
         banner.setDataValue('items', items)
         return banner
@@ -40,10 +40,6 @@ class Banner extends Model {
         const url = await Banner.getImgUrl(banner)
         banner.setDataValue('img', url)
         return banner
-    }
-
-    aaa () {
-        return 'id'
     }
 
     // 获取图片url

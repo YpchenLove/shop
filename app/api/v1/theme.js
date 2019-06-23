@@ -14,7 +14,8 @@ const router = new Router({
  * @access  public
  */
 router.get('/', async (ctx, next) => {
-    const theme = await Theme.getThemeList()
+    const ids = ctx.query.ids.split(',')
+    const theme = await Theme.getThemeList(ids)
 
     ctx.body = theme
 })

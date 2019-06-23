@@ -1,18 +1,49 @@
 const { db } = require('../../core/db')
-const { Sequelize, Model } = require('sequelize')
+const { Sequelize, Model, Op } = require('sequelize')
 const { Image } = require('./image')
+const { Product } = require('./product')
+const { ThemeProduct } = require('./theme-product')
 
 class Theme extends Model {
     // 返回列表
-    static async getThemeList() {
-        const themes = await Theme.findAll()
+    static async getThemeList(ids) {
+        const themes = await Theme.findAll({
+            where: {
+                id: {
+                    [Op.or]: ids
+                }
+            }
+        })
+        if (themes.length < 1) {
+            throw new global.errs.NotFound()
+        }
         for (var theme of themes) {
-            theme.setDataValue('topicImgId', await Theme.getTopic(theme))
-            theme.setDataValue('headImgId', await Theme.getHead(theme))
+            theme.setDataValue('topicImg', await Theme.getTopic(theme))
+            delete theme.dataValues.topicImgId
+            theme.setDataValue('headImg', await Theme.getHead(theme))
+            delete theme.dataValues.headImgId
         }
         return themes
     }
-    // 获取图片
+
+    // 返回列表
+    static async getThemeWithProduct(id) {
+        const theme = await Theme.findOne({
+            where: { id }
+        })
+        if (!theme) {
+            throw new global.errs.NotFound()
+        }
+        // for (var theme of themes) {
+        //     theme.setDataValue('topicImg', await Theme.getTopic(theme))
+        //     delete theme.dataValues.topicImgId
+        //     theme.setDataValue('headImg', await Theme.getHead(theme))
+        //     delete theme.dataValues.headImgId
+        // }
+        return themes
+    }
+
+    // 获取topic图片
     static async getTopic(item) {
         const img = await item.getTopicImg()
         return {
@@ -20,7 +51,7 @@ class Theme extends Model {
         }
     }
 
-    // 获取头图
+    // 获取head图片
     static async getHead(item) {
         const img = await item.getHeadImg()
         return {
@@ -52,6 +83,11 @@ Theme.belongsTo(Image, {
 Theme.belongsTo(Image, {
     foreignKey: 'headImgId',
     as: 'headImg'
+})
+
+// 关联ThemeProduct 模型
+Theme.belongsToMany(Product, {
+    through: 'ThemeProduct'
 })
 
 module.exports = { Theme }
