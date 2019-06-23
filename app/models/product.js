@@ -9,10 +9,13 @@ class Product extends Model {
             order: [
                 ['created_at', 'DESC']
             ],
+            attributes: {
+                exclude: ['summary', 'from', 'categoryId', 'imgId']
+            },
             limit: count
         })
         if (products.length < 1) {
-            throw new global.errs.NotFound()
+            throw new global.errs.NotFound('分类不存在！')
         }
         for (let p of products) {
             const url = await Image.getImgUrl(p.getDataValue('mainImgUrl'), p)
@@ -43,11 +46,5 @@ Product.init({
     sequelize: db,
     tableName: 'product'
 })
-
-//  关联 Image 模型
-// Product.belongsTo(Image, {
-//     foreignKey: 'mainImgUrl',
-//     as: 'mainImg'
-// })
 
 module.exports = { Product }

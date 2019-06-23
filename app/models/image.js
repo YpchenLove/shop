@@ -10,6 +10,11 @@ class Image extends Model {
         }
         return finalUrl
     }
+    toJSON() {
+        return {
+            url: this.getImgUrl(this.getDataValue.url, this)
+        }
+    }
 }
 
 Image.init({

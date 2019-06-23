@@ -15,7 +15,7 @@ class Theme extends Model {
             }
         })
         if (themes.length < 1) {
-            throw new global.errs.NotFound()
+            throw new global.errs.NotFound('指定主题不存在，请检查ids')
         }
         for (var theme of themes) {
             theme.setDataValue('topicImg', await Theme.getTopic(theme))
@@ -32,7 +32,7 @@ class Theme extends Model {
             where: { id }
         })
         if (!theme) {
-            throw new global.errs.NotFound()
+            throw new global.errs.NotFound('主题不存在')
         }
         theme.setDataValue('topicImg', await Theme.getTopic(theme))
         delete theme.dataValues.topicImgId
