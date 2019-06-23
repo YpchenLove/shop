@@ -389,6 +389,8 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `openid` varchar(50) NOT NULL,
   `nickname` varchar(50) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
   `extend` varchar(255) DEFAULT NULL,
   `delete_time` int(11) DEFAULT NULL,
   `create_time` int(11) DEFAULT NULL COMMENT '注册时间',
