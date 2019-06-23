@@ -1,4 +1,3 @@
-const util = require('util')
 const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 const { Image } = require('./image')

@@ -18,7 +18,9 @@ Image.init({
         primaryKey: true,
         autoIncrement: true
     },
-    url: Sequelize.STRING,             // 图片路径
+    url: {
+        type: Sequelize.STRING
+    },                                 // 图片路径
     from: Sequelize.INTEGER            // 来源
 }, {
     sequelize: db,

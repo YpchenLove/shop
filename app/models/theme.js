@@ -12,6 +12,7 @@ class Theme extends Model {
         }
         return themes
     }
+    // 获取图片
     static async getTopic(item) {
         const img = await item.getTopicImg()
         return {
@@ -19,6 +20,7 @@ class Theme extends Model {
         }
     }
 
+    // 获取头图
     static async getHead(item) {
         const img = await item.getHeadImg()
         return {

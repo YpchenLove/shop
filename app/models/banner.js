@@ -2,6 +2,7 @@ const util = require('util')
 const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 const { BannerItem } = require('./bannerItem')
+const { Image } = require('./image')
 
 class Banner extends Model {
     // 获取banner列表
@@ -13,9 +14,10 @@ class Banner extends Model {
             throw new global.errs.NotFound()
         }
         const items = await banner.getItems()
-        items.forEach((item) => {
-            console.log(item)
-        })
+        for (let item of items) {
+            const url = await Banner.getImgUrl(item)
+            item.setDataValue('url', url)
+        }
         banner.setDataValue('items', items)
         return banner
     }
@@ -23,12 +25,33 @@ class Banner extends Model {
     // 获取banner详情
     static async getBannerDetail(id) {
         const banner = await BannerItem.findOne({
-            where: { id }
+            where: { id },
+            include: [{
+                model: Image,
+                as: 'img',
+                attributes: {
+                    exclude: ['from', 'id']
+                }
+            }]
         })
         if (!banner) {
             throw new global.errs.NotFound()
         }
+        const url = await Banner.getImgUrl(banner)
+        banner.setDataValue('img', url)
         return banner
+    }
+
+    aaa () {
+        return 'id'
+    }
+
+    // 获取图片url
+    static async getImgUrl(item) {
+        const img = await item.getImg()
+        return {
+            url: Image.getImgUrl(img.dataValues.url, img)
+        }
     }
 }
 
