@@ -10,12 +10,33 @@ class Product extends Model {
                 ['created_at', 'DESC']
             ],
             attributes: {
-                exclude: ['summary', 'from', 'categoryId', 'imgId']
+                exclude: ['summary', 'categoryId', 'imgId']
             },
             limit: count
         })
         if (products.length < 1) {
-            throw new global.errs.NotFound('分类不存在！')
+            throw new global.errs.NotFound()
+        }
+        for (let p of products) {
+            const url = await Image.getImgUrl(p.getDataValue('mainImgUrl'), p)
+            p.setDataValue('mainImgUrl', url)
+            delete p.dataValues.from
+        }
+        return products
+    }
+
+    // 根据分类 id 获取商品
+    static async getProductByCategoryID(id) {
+        const products = await Product.findAll({
+            where: {
+                categoryId: id
+            },
+            attributes: {
+                exclude: ['summary', 'imgId']
+            }
+        })
+        if (products.length < 1) {
+            throw new global.errs.NotFound()
         }
         for (let p of products) {
             const url = await Image.getImgUrl(p.getDataValue('mainImgUrl'), p)
