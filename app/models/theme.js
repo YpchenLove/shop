@@ -5,7 +5,7 @@ const { Product } = require('./product')
 const { ThemeProduct } = require('./theme-product')
 
 class Theme extends Model {
-    // 返回列表
+    // 获取列表
     static async getThemeList(ids) {
         const themes = await Theme.findAll({
             where: {
@@ -26,7 +26,7 @@ class Theme extends Model {
         return themes
     }
 
-    // 返回列表
+    // 获取主题详情
     static async getThemeWithProduct(id) {
         const theme = await Theme.findOne({
             where: { id }
@@ -34,13 +34,18 @@ class Theme extends Model {
         if (!theme) {
             throw new global.errs.NotFound()
         }
-        // for (var theme of themes) {
-        //     theme.setDataValue('topicImg', await Theme.getTopic(theme))
-        //     delete theme.dataValues.topicImgId
-        //     theme.setDataValue('headImg', await Theme.getHead(theme))
-        //     delete theme.dataValues.headImgId
-        // }
-        return themes
+        theme.setDataValue('topicImg', await Theme.getTopic(theme))
+        delete theme.dataValues.topicImgId
+        theme.setDataValue('headImg', await Theme.getHead(theme))
+        delete theme.dataValues.headImgId
+        const products = await theme.getProducts()
+        for (let p of products) {
+            const url = await Image.getImgUrl(p.dataValues.mainImgUrl, p)
+            p.setDataValue('mainImgUrl', url)
+            delete p.dataValues.ThemeProduct
+        }
+        theme.setDataValue('products', products)
+        return theme
     }
 
     // 获取topic图片
@@ -87,7 +92,8 @@ Theme.belongsTo(Image, {
 
 // 关联ThemeProduct 模型
 Theme.belongsToMany(Product, {
-    through: 'ThemeProduct'
+    through: ThemeProduct,
+    as: 'products'
 })
 
 module.exports = { Theme }

@@ -88,30 +88,12 @@ function checkType(vals) {
 }
 
 // 任务校验
-class TaskValidator extends LinValidator {
+class ProductValidator extends LinValidator {
     constructor () {
         super()
-        this.title = [
-            new Rule('isLength', '必须是1-32位字符串', { min: 1, max: 32 })
+        this.count = [
+            new Rule('isInt', '需要是1~50的正整数', { min: 1, max: 50 })
         ]
-        this.startTime = [
-            new Rule('isLength', '不允许为空', { min: 1 })
-        ]
-        this.validateType = checkType
-    }
-}
-
-// 修改任务校验
-class PutTaskValidator extends TaskValidator {
-    constructor () {
-        super()
-        this.status = [
-            new Rule('isInt', '状态必须为0或1', { min: 0, max: 1 })
-        ]
-        this.id = [
-            new Rule('isInt', '需要是正整数', { min: 1 })
-        ]
-        this.validateType = checkType
     }
 }
 
@@ -121,6 +103,5 @@ module.exports = {
     TokenValidator,
     NotEmptyValidator,
     // 业务
-    TaskValidator,
-    PutTaskValidator
+    ProductValidator
 }
