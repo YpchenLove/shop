@@ -21,4 +21,17 @@ router.get('/recent', async (ctx, next) => {
     ctx.body = product
 })
 
+/**
+ * @route   GET /:id
+ * @desc    获取商品详情
+ * @access  public
+ */
+router.get('/:id', async (ctx, next) => {
+    const v = await new PositiveIntegerValidator().validate(ctx)
+    const id = v.get('path.id')
+    const product = await Product.getProduct(id)
+
+    ctx.body = product
+})
+
 module.exports = router

@@ -97,11 +97,32 @@ class ProductValidator extends LinValidator {
     }
 }
 
+// 用户校验
+class UserValidator extends LinValidator {
+    constructor () {
+        super()
+        this.email = [
+            new Rule('isOptional'),
+            new Rule('isEmail', '不符合Email规范')
+        ]
+        this.nickname = [
+            new Rule('isOptional'),
+            new Rule('isLength', '昵称至少4个字符，最多16个字符', { min: 4, max: 16 })
+        ]
+        this.password = [
+            new Rule('isOptional'),
+            new Rule('isLength', '密码至少6个字符，最多32个字符', { min: 6, max: 32 }),
+            new Rule('matches', '密码不符合规范', '^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]')
+        ]
+    }
+}
+
 module.exports = {
     PositiveIntegerValidator,
     RegisterValidator,
     TokenValidator,
     NotEmptyValidator,
     // 业务
-    ProductValidator
+    ProductValidator,
+    UserValidator
 }

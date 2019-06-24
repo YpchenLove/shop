@@ -1,10 +1,11 @@
 const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 const { Image } = require('./image')
+const { ProductImage } = require('./product-image')
 
 class Product extends Model {
     // 获取最近新品
-    static async getRecent(count) {
+    static async getRecent(count = 5) {
         const products = await Product.findAll({
             order: [
                 ['created_at', 'DESC']
@@ -44,6 +45,23 @@ class Product extends Model {
         }
         return products
     }
+
+    // 获取商品详情
+    static async getProduct(id) {
+        const product = await Product.findOne({
+            where: { id }
+        })
+        if (!product) {
+            throw new global.errs.NotFound('未找到商品！')
+        }
+        const url = await Image.getImgUrl(product.getDataValue('mainImgUrl'), product)
+        product.setDataValue('mainImgUrl', url)
+
+        const detail = await product.getDetail()
+        product.setDataValue('detail', detail)
+
+        return product
+    }
 }
 
 Product.init({
@@ -66,6 +84,12 @@ Product.init({
 }, {
     sequelize: db,
     tableName: 'product'
+})
+
+//  关联 bannerItem模型
+Product.hasMany(ProductImage, {
+    foreignKey: 'productId',
+    as: 'detail'
 })
 
 module.exports = { Product }

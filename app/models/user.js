@@ -47,6 +47,9 @@ User.init({
         type: Sequelize.STRING(128),
         unique: true
     },
+    extend: {
+        type: Sequelize.STRING(128)
+    },
     password: {
         type: Sequelize.STRING,
         set(val) {

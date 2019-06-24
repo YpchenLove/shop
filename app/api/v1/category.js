@@ -14,14 +14,14 @@ const router = new Router({
  * @desc    获取 category列表
  * @access  public
  */
-router.get('/', async (ctx, next) => {
+router.get('/', new Auth().m, async (ctx, next) => {
     const categorys = await Category.getAllCategory()
     ctx.body = categorys
 })
 
 /**
  * @route   GET /:id
- * @desc    获取 category列表
+ * @desc    获取某个category下的商品列表
  * @access  public
  */
 router.get('/:id', async (ctx, next) => {
