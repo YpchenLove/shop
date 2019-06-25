@@ -57,8 +57,23 @@ class Product extends Model {
         const url = await Image.getImgUrl(product.getDataValue('mainImgUrl'), product)
         product.setDataValue('mainImgUrl', url)
 
-        const detail = await product.getDetail()
-        product.setDataValue('detail', detail)
+        const detailImgs = await product.getDetail({
+            order: [
+                ['order']
+            ],
+            attributes: {
+                exclude: ['productId']
+            }
+        })
+
+        for (let d of detailImgs) {
+            const img = await d.getImg()
+            const url = await Image.getImgUrl(img.getDataValue('url'), img)
+
+            d.setDataValue('url', url)
+        }
+
+        product.setDataValue('detail', detailImgs)
 
         return product
     }

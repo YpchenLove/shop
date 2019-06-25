@@ -19,4 +19,9 @@ ProductImage.init({
     tableName: 'product_image'
 })
 
+//  关联 Image 模型
+ProductImage.belongsTo(Image, {
+    foreignKey: 'imgId',
+    as: 'img'
+})
 module.exports = { ProductImage }
