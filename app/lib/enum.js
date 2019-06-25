@@ -17,14 +17,6 @@ const loginType = {
     isThisType                  // 调用枚举方法
 }
 
-// 任务类型
-const taskType = {
-    ONCE: 100,                  // 单次
-    EVERY: 200,                 // 每天
-    isThisType                  // 调用枚举方法
-}
-
 module.exports = {
-    loginType,
-    taskType
+    loginType
 }

@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 
 const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
+const { UserAddress } = require('./user-address')
 
 class User extends Model {
     // 验证账号

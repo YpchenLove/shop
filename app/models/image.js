@@ -6,7 +6,8 @@ class Image extends Model {
     static getImgUrl(value, data) {
         let finalUrl = value
         if (data.from === 1) {
-            finalUrl = global.config.host + 'images' + value
+            // finalUrl = global.config.host + 'images' + value
+            finalUrl = 'http://192.168.199.175:3000/images' + value      // 局域网地址，可以用小程序真机访问
         }
         return finalUrl
     }

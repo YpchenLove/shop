@@ -6,7 +6,7 @@ class Auth {
     constructor (level) {
         this.level = level || 1
         Auth.USER = 8
-        Auth.ADMIN = 8
+        Auth.ADMIN = 16
     }
     get m () {
         return async (ctx, next) => {

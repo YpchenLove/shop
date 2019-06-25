@@ -6,6 +6,9 @@ class Category extends Model {
     // 获取 category 分类列表
     static async getAllCategory(id) {
         const categorys = await Category.findAll()
+        if (categorys.length < 1) {
+            throw new global.errs.NotFound()
+        }
         for (let c of categorys) {
             const url = await Category.getImgUrl(c)
             c.setDataValue('img', url)

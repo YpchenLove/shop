@@ -87,7 +87,7 @@ function checkType(vals) {
     }
 }
 
-// 任务校验
+// 商品校验
 class ProductValidator extends LinValidator {
     constructor () {
         super()
@@ -117,6 +117,37 @@ class UserValidator extends LinValidator {
     }
 }
 
+// 地址校验
+class AddressValidator extends LinValidator {
+    constructor () {
+        super()
+        this.name = [
+            new Rule('isLength', '昵称至少1个字符，最多16个字符', { min: 1, max: 16 })
+        ]
+        // this.validateMobile = checkMobile
+        this.province = [
+            new Rule('isLength', '至少2个字符，最多16个字符', { min: 2, max: 16 })
+        ]
+        this.city = [
+            new Rule('isLength', '至少2个字符，最多16个字符', { min: 2, max: 16 })
+        ]
+        this.country = [
+            new Rule('isLength', '至少2个字符，最多16个字符', { min: 2, max: 16 })
+        ]
+        this.detail = [
+            new Rule('isLength', '密码至少1个字符，最多32个字符', { min: 1, max: 64 })
+        ]
+    }
+}
+
+function checkMobile(vals) {
+    const mobile = vals.body.mobile
+    const reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/
+    if (!reg.test(mobile)) {
+        throw new Error('手机号不符合规范！')
+    }
+}
+
 module.exports = {
     PositiveIntegerValidator,
     RegisterValidator,
@@ -124,5 +155,6 @@ module.exports = {
     NotEmptyValidator,
     // 业务
     ProductValidator,
-    UserValidator
+    UserValidator,
+    AddressValidator
 }
