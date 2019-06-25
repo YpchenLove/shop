@@ -2,6 +2,7 @@ const { db } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 const { Image } = require('./image')
 const { ProductImage } = require('./product-image')
+const { ProductProperty } = require('./product-property')
 
 class Product extends Model {
     // 获取最近新品
@@ -54,9 +55,10 @@ class Product extends Model {
         if (!product) {
             throw new global.errs.NotFound('未找到商品！')
         }
+        // url
         const url = await Image.getImgUrl(product.getDataValue('mainImgUrl'), product)
-        product.setDataValue('mainImgUrl', url)
-
+        // properties
+        const properties = await product.getProperties()
         const detailImgs = await product.getDetail({
             order: [
                 ['order']
@@ -65,7 +67,7 @@ class Product extends Model {
                 exclude: ['productId']
             }
         })
-
+        // detailImgs
         for (let d of detailImgs) {
             const img = await d.getImg()
             const url = await Image.getImgUrl(img.getDataValue('url'), img)
@@ -73,7 +75,9 @@ class Product extends Model {
             d.setDataValue('url', url)
         }
 
+        product.setDataValue('mainImgUrl', url)
         product.setDataValue('detail', detailImgs)
+        product.setDataValue('properties', properties)
 
         return product
     }
@@ -105,6 +109,12 @@ Product.init({
 Product.hasMany(ProductImage, {
     foreignKey: 'productId',
     as: 'detail'
+})
+
+//  关联 ProductProperty
+Product.hasMany(ProductProperty, {
+    foreignKey: 'productId',
+    as: 'properties'
 })
 
 module.exports = { Product }

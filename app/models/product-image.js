@@ -1,7 +1,6 @@
 const { db } = require('../../core/db')
 const { Sequelize, Model, Op } = require('sequelize')
 const { Image } = require('./image')
-const { Product } = require('./product')
 
 class ProductImage extends Model {}
 
