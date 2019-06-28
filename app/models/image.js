@@ -7,7 +7,7 @@ class Image extends Model {
         let finalUrl = value
         if (data.from === 1) {
             // finalUrl = global.config.host + 'images' + value
-            finalUrl = 'http://192.168.199.175:3000/images' + value      // 局域网地址，可以用小程序真机访问
+            finalUrl = 'http://192.168.199.175:3000/images' + value      // 换成自己的局域网地址，可以用小程序真机访问
         }
         return finalUrl
     }

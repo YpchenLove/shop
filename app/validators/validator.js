@@ -148,6 +148,48 @@ function checkMobile(vals) {
     }
 }
 
+// 订单校验
+class OrderValidator extends LinValidator {
+    constructor () {
+        super()
+        this.validateProducts = checkProducts
+    }
+}
+
+function checkProducts(vals) {
+    const products = vals.body.products
+    if (!(products instanceof Array)) {
+        throw new Error('products必须是数组类型！')
+    }
+    if (products.length < 1) {
+        throw new Error('必须传递至少一组商品！')
+    }
+    checkProductItem(products)
+}
+
+function checkProductItem(products) {
+    products.forEach(product => {
+        if (!product.count) {
+            throw new Error('count是必填参数')
+        }
+        if (!product.product_id) {
+            throw new Error('product_id是必填参数')
+        }
+        if (!(isPositiveInteger(product.count))) {
+            throw new Error('count必须是不为0的正整数')
+        }
+        if (!(isPositiveInteger(product.product_id))) {
+            throw new Error('product_id必须是不为0的正整数')
+        }
+    })
+}
+
+function isPositiveInteger(s) {
+    if (s === 0) return false
+    var re = /^[0-9]+$/
+    return re.test(s)
+}
+
 module.exports = {
     PositiveIntegerValidator,
     RegisterValidator,
@@ -156,5 +198,6 @@ module.exports = {
     // 业务
     ProductValidator,
     UserValidator,
-    AddressValidator
+    AddressValidator,
+    OrderValidator
 }
