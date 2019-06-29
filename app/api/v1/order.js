@@ -15,10 +15,10 @@ const router = new Router({
  * @desc    提交订单
  * @access  private
  */
-router.post('/', async (ctx, next) => {
+router.post('/', new Auth().m, async (ctx, next) => {
     const v = await new OrderValidator().validate(ctx)
     const products = v.get('body.products')
-    const result = await Order.createOrder(products)
+    const result = await Order.createOrder(products, ctx.auth.uid)
     ctx.body = result
 })
 

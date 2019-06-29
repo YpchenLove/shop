@@ -7,6 +7,7 @@ class Auth {
         this.level = level || 1
         Auth.USER = 8
         Auth.ADMIN = 16
+        this.uid = null
     }
     get m () {
         return async (ctx, next) => {
@@ -37,6 +38,8 @@ class Auth {
                 uid: decode.uid,
                 scope: decode.scope
             }
+
+            this.uid = decode.uid
 
             await next()
         }
