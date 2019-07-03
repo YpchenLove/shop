@@ -159,7 +159,7 @@ INSERT INTO `image` VALUES ('69', '/product-vg@3.png', '1', null, null, null);
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_no` varchar(20) NOT NULL COMMENT '订单号',
+  `order_no` varchar(30) NOT NULL COMMENT '订单号',
   `user_id` int(11) NOT NULL COMMENT '外键，用户id，注意并不是openid',
   `deleted_at` int(11) DEFAULT NULL,
   `created_at` int(11) DEFAULT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE `order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_no` (`order_no`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=539 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of order

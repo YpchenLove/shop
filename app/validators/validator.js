@@ -172,14 +172,14 @@ function checkProductItem(products) {
         if (!product.count) {
             throw new Error('count是必填参数')
         }
-        if (!product.product_id) {
-            throw new Error('product_id是必填参数')
+        if (!product.productId) {
+            throw new Error('productId是必填参数')
         }
         if (!(isPositiveInteger(product.count))) {
             throw new Error('count必须是不为0的正整数')
         }
-        if (!(isPositiveInteger(product.product_id))) {
-            throw new Error('product_id必须是不为0的正整数')
+        if (!(isPositiveInteger(product.productId))) {
+            throw new Error('productId必须是不为0的正整数')
         }
     })
 }

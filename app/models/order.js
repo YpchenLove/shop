@@ -2,22 +2,23 @@ const _ = require('lodash')
 const { db } = require('../../core/db')
 const { Sequelize, Model, Op } = require('sequelize')
 const { Product } = require('./product')
+const { OrderProduct } = require('./order-product')
 const { UserAddress } = require('./user-address')
+const { User } = require('./user')
 const { Auth } = require('../../middlewares/auth')
 
+let _uid = 111
+let _products = []
+let _oProducts = []
+
 class Order extends Model {
-    constructor() {
-        super()
-        this.oProducts = []
-        this.products = []
-        this.uid = null
-    }
+    // 创建订单
     static async createOrder(oProducts, uid) {
         // 获取商品数组的 ids
-        this.oProducts = oProducts
-        this.uid = uid
+        _uid = uid
+        _oProducts = oProducts
         const ids = oProducts.map(product => {
-            return product.product_id
+            return product.productId
         })
         // 找到传递过来的商品
         const products = await Product.findAll({
@@ -28,7 +29,7 @@ class Order extends Model {
             },
             attributes: ['id', 'price', 'stock', 'name', 'mainImgUrl']
         })
-        this.products = products
+        _products = products
 
         // 验证订单状态
         const status = await Order.getOrderStatus(oProducts, products)
@@ -39,21 +40,42 @@ class Order extends Model {
         // 创建订单
         const orderSnap = await Order.snapOrder(status)
 
-        const order = Object.assign(orderSnap, {
-            userId: this.uid,
-            orderNo: Order.nameOrderNo()
-        })
-        delete order.pStatus
-        console.log(order)
-        await Order.create(order)
+        const snap = {
+            orderNo: Order.OrderNo(),
+            userId: 1,
+            totalPrice: orderSnap.totalPrice,
+            totalCount: orderSnap.totalCount,
+            snapImg: orderSnap.snapImg,
+            snapName: orderSnap.snapName,
+            snapAddress: orderSnap.snapAddress,
+            snapItems: orderSnap.pStatus
+        }
 
-        return 1
+        // 订单通过 事务
+        return db.transaction(async t => {
+            const order = await Order.create({ ...snap }, { transaction: t })
+            const orderId = order.id
+            _oProducts.forEach(_oProduct => {
+                _oProduct.orderId = orderId
+            })
+            
+            await OrderProduct.bulkCreate(_oProducts, {transaction: t})
+
+            return {
+                orderId: order.id,
+                // createdAt: new Date(order.created_at).toLocaleString(),
+                createdAt: order.created_at,
+                orderNo: order.orderNo,
+                pass: true
+            }
+
+        })
+
+        
     }
 
-    
-
     // 生成订单号
-    static nameOrderNo() {
+    static OrderNo() {
         const myDate = new Date()
         const myYear = myDate.getFullYear()             // 获取当前年份
         const myMonth = myDate.getMonth() + 1           // 获取当前月份
@@ -64,7 +86,7 @@ class Order extends Model {
         const myMilSec = myDate.getMilliseconds()          // 获取当前毫秒数(1-999)
         const yCode = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
 
-        const orderSn = yCode[myYear - 2018] + myMonth.toString(16) + myDay + myHours + myMinu + mySec + myMilSec + _.random(0, 999)
+        const orderSn = yCode[myYear - 2018] + myMonth.toString(16) + myDay + myHours + myMinu + mySec + myMilSec + _.random(10, 99)
         return orderSn
     }
 
@@ -80,11 +102,11 @@ class Order extends Model {
         }
         snap.totalPrice = status.orderPrice
         snap.totalCount = status.totalCount
-        snap.snapItems = JSON.stringify(status.pStatusArray)
+        snap.pStatus = JSON.stringify(status.pStatusArray)
         snap.snapAddress = await Order.getOrderAddress()
-        snap.snapName = this.products[0].name
-        snap.snapImg = this.products[0].mainImgUrl
-        if (this.products.length > 1) {
+        snap.snapName = _products[0].name
+        snap.snapImg = global.config.host + 'images' + _products[0].mainImgUrl
+        if (_products.length > 1) {
             snap.snapName += '等'
         }
         return snap
@@ -92,7 +114,7 @@ class Order extends Model {
 
     // 订单地址
     static async getOrderAddress() {
-        const address = await UserAddress.getAddress(this.uid)
+        const address = await UserAddress.getAddress(_uid)
         return JSON.stringify(address)
     }
 
@@ -105,7 +127,7 @@ class Order extends Model {
             pStatusArray: []
         }
         oProducts.forEach(oProduct => {
-            const pStatus = Order.getProductStatus(oProduct.product_id, oProduct.count, products)
+            const pStatus = Order.getProductStatus(oProduct.productId, oProduct.count, products)
             if (!pStatus.havaStock) {
                 status.pass = false
             }
@@ -154,18 +176,19 @@ Order.init({
     },
     orderNo: {
         type: Sequelize.STRING(64),
-        comment: '订单号'
-    },                                      // 名字
-    userId: Sequelize.INTEGER,                 // 价格
-    totalPrice: Sequelize.FLOAT,               // 库存
-    status: Sequelize.INTEGER,                  // 分类id
-    snapImg: Sequelize.STRING,                // 属于
-    snapName: Sequelize.STRING,               // 图片id
+        unique: true
+    },                                      // 订单号
+    userId: Sequelize.INTEGER,              // 用户id
+    totalPrice: Sequelize.FLOAT,            // 总价格
+    status: Sequelize.INTEGER,              // 状态id
+    snapImg: Sequelize.STRING,              // 订单图片
+    snapName: Sequelize.STRING,             // 图片
     totalCount: Sequelize.INTEGER,          // 图片url
-    snapItems: Sequelize.STRING,            // 描述
-    snapAddress: Sequelize.STRING,          // 描述
-    prepayId: Sequelize.INTEGER,            // 描述
+    snapItems: Sequelize.STRING,            // 子类
+    snapAddress: Sequelize.STRING,          // 地址
+    prepayId: Sequelize.INTEGER,            // 支付id
 }, {
+    raw: false,
     sequelize: db,
     tableName: 'order'
 })

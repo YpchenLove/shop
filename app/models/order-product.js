@@ -5,6 +5,11 @@ const { Image } = require('./image')
 class OrderProduct extends Model {}
 
 OrderProduct.init({
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     orderId: Sequelize.INTEGER,           // 订单id
     productId: Sequelize.INTEGER,         // 商品id
     count: Sequelize.INTEGER              // 商品数量

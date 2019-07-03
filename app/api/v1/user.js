@@ -37,7 +37,7 @@ router.put('/', new Auth().m, async (ctx, next) => {
         nickname: v.get('body.nickname'),
         password: v.get('body.password2')
     }
-    await User.create(user)
+    await User.update(user)
     throw new Success('注册成功')
 })
 
