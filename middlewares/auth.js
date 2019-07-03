@@ -54,6 +54,16 @@ class Auth {
             return false
         }
     }
+
+    static isValidOperate(checkedUID) {
+        if (!checkedUID) {
+            throw new global.errs.NotFound('必须传入uid')
+        }
+        if (checkedUID === this.uid) {
+            return true
+        }
+        return false
+    }
 }
 
 module.exports = { Auth }

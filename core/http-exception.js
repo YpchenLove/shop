@@ -57,11 +57,22 @@ class Forbbiden extends HttpException {
     }
 }
 
+class OrderException extends HttpException {
+    constructor(msg, errorCode) {
+        super()
+        this.code = 404
+        this.errorCode = errorCode || 80000
+        this.msg = msg || '订单不存在，请检查ID'
+    }
+}
+
 module.exports = {
     HttpException,
     ParameterException,
     Success,
     NotFound,
     AuthFailed,
-    Forbbiden
+    Forbbiden,
+    // 业务
+    OrderException
 }

@@ -17,18 +17,9 @@ class Order extends Model {
         // 获取商品数组的 ids
         _uid = uid
         _oProducts = oProducts
-        const ids = oProducts.map(product => {
-            return product.productId
-        })
+
         // 找到传递过来的商品
-        const products = await Product.findAll({
-            where: {
-                id: {
-                    [Op.in]: ids
-                }
-            },
-            attributes: ['id', 'price', 'stock', 'name', 'mainImgUrl']
-        })
+        const products = await Order.getProductsByOrder(oProducts)
         _products = products
 
         // 验证订单状态
@@ -37,9 +28,11 @@ class Order extends Model {
             status.orderId = -1
             return status
         }
+        
         // 创建订单
         const orderSnap = await Order.snapOrder(status)
-
+        
+        // 订单参数
         const snap = {
             orderNo: Order.OrderNo(),
             userId: 1,
@@ -70,8 +63,36 @@ class Order extends Model {
             }
 
         })
+    }
 
+    // 根据orderId 查询订单信息
+    static async checkOrderStock(orderId) {
+        const oProducts = await OrderProduct.findAll({
+            where: {
+                orderId
+            }
+        })
+        const products = await Order.getProductsByOrder(oProducts)
+        const status = await Order.getOrderStatus(oProducts, products)
         
+        return status
+
+    }
+
+    // 根据传递的参数获取商品信息
+    static async getProductsByOrder(oProducts) {
+        const ids = oProducts.map(product => {
+            return product.productId
+        })
+        const products = await Product.findAll({
+            where: {
+                id: {
+                    [Op.in]: ids
+                }
+            },
+            attributes: ['id', 'price', 'stock', 'name', 'mainImgUrl']
+        })
+        return products
     }
 
     // 生成订单号
@@ -138,7 +159,6 @@ class Order extends Model {
         return status
     }
 
-
     // 判断商品状态
     static getProductStatus(oid, ocount, products) {
         let pIndex = -1
@@ -180,7 +200,10 @@ Order.init({
     },                                      // 订单号
     userId: Sequelize.INTEGER,              // 用户id
     totalPrice: Sequelize.FLOAT,            // 总价格
-    status: Sequelize.INTEGER,              // 状态id
+    status: {
+        type: Sequelize.INTEGER,              // 状态id
+        defaultValue: 1
+    },
     snapImg: Sequelize.STRING,              // 订单图片
     snapName: Sequelize.STRING,             // 图片
     totalCount: Sequelize.INTEGER,          // 图片url
