@@ -65,6 +65,45 @@ class Order extends Model {
         })
     }
 
+    // 分页获取订单  page count
+    static async getOrders(userId, page, count) {
+        const orders = await Order.findAll({
+            limit: count,
+            offset: (page - 1) * count,
+            where: {
+                userId
+            },
+            attributes: {
+                exclude: ['userId']
+            }
+        })
+        // if (orders.length < 1) {
+        //     throw new global.errs.NotFound('当前用户没有创建订单了！')
+        // }
+        return orders
+
+    }
+
+    // 获取订单详情
+    static async getOrderDetail(userId, orderID) {
+        const order = await Order.findOne({
+            where: {
+                id: orderID,
+                userId
+            },
+            raw: true,
+            attributes: {
+                exclude: ['deleted_at', 'updated_at', 'userId']
+            }
+        })
+        if (!order) {
+            throw new global.errs.NotFound('没有查询到订单详情！')
+        }
+        order.created_at = new Date(order.created_at).toLocaleString()
+        order.snapAddress = JSON.parse(order.snapAddress)
+        return order
+    }
+
     // 根据orderId 查询订单信息
     static async checkOrderStock(orderId) {
         const oProducts = await OrderProduct.findAll({
@@ -167,7 +206,8 @@ class Order extends Model {
             havaStock: false,
             count: 0,
             name: '',
-            totalPrice: 0
+            totalPrice: 0,
+            mainImgUrl: ''
         }
         for (let i = 0; i < products.length; i++) {
             if (oid === products[i].id) {
@@ -183,6 +223,7 @@ class Order extends Model {
             pStatus.name = product.name
             pStatus.havaStock = product.stock >= ocount
             pStatus.totalPrice = product.price * ocount
+            pStatus.mainImgUrl =  global.config.host + 'images' + product.mainImgUrl
         }
         return pStatus
     }

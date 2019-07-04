@@ -9,10 +9,20 @@ class Pay {
     }
     // 支付
     static async pay() {
+        await Pay.checkOrderValid()
         const status = await Order.checkOrderStock(this.orderId)
+
+        if (!status.pass) {
+            return status
+        }
     }
 
-    // 检验订单，返回订单号
+    // 向微信发送预订单
+    static async makeWxPreOrder(totalPrice) {
+        // const openid = await
+    }
+
+    // 检验订单: [ 是否存在, 是否是当前用户, 是否支付过 ]，返回订单号
     static async checkOrderValid() {
         const order = Order.findOne({
             where: {

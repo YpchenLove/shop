@@ -4,7 +4,7 @@ const {
     PositiveIntegerValidator
 } = require('../../validators/validator')
 const { Auth } = require('../../../middlewares/auth')
-// const { Auth } = require('@models/product')
+const { Pay } = require('../../services/wx-pay')
 
 const router = new Router({
     prefix: '/v1/pay'
@@ -16,7 +16,11 @@ const router = new Router({
  * @access  private
  */
 router.post('/pre', new Auth().m, async (ctx, next) => {
-    
+    const v = await new PositiveIntegerValidator().validate(ctx)
+    const id = v.get('body.id')
+    const pay = new Pay(id)
+    const p = await pay.pay()
+    ctx.body = p
 })
 
 module.exports = router

@@ -20,7 +20,7 @@ class User extends Model {
         return user
     }
 
-    // 查询openid
+    // 查询用户 openid
     static async getUserByOpenid (openid) {
         const user = await User.findOne({
             where: { openid }

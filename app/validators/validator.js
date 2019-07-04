@@ -190,6 +190,20 @@ function isPositiveInteger(s) {
     return re.test(s)
 }
 
+// 订单校验
+class PageValidator extends LinValidator {
+    constructor () {
+        super()
+        this.page = [
+            new Rule('isInt', '需要是正整数', { min: 1 })
+        ]
+        this.count = [
+            new Rule('isOptional'),
+            new Rule('isInt', '需要是大于5的正整数', { min: 5 })
+        ]
+    }
+}
+
 module.exports = {
     PositiveIntegerValidator,
     RegisterValidator,
@@ -199,5 +213,6 @@ module.exports = {
     ProductValidator,
     UserValidator,
     AddressValidator,
-    OrderValidator
+    OrderValidator,
+    PageValidator
 }
