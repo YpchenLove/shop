@@ -35,7 +35,7 @@
     "mysql2": "^1.6.5",
     "nodemon": "^1.18.9",
     "require-directory": "^2.1.1",
-    "sequelize": "^5.8.6",
+    "sequelize": "^5.15.1",
     "validator": "^10.11.0"
   },
   "devDependencies": {
