@@ -30,7 +30,7 @@
     "koa-json": "^2.0.2",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "module-alias": "^2.2.0",
     "mysql2": "^1.6.5",
     "nodemon": "^1.18.9",
