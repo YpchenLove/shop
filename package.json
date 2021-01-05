@@ -20,7 +20,7 @@
     "url": "git+https://github.com/YpchenLove/Koa2-island.git"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "basic-auth": "^2.0.1",
     "bcryptjs": "^2.4.3",
     "chalk": "^2.4.2",
