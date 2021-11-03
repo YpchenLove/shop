@@ -36,7 +36,7 @@
     "nodemon": "^1.18.9",
     "require-directory": "^2.1.1",
     "sequelize": "^5.8.6",
-    "validator": "^10.11.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "eslint": "^5.13.0",
